@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 
 def dataReaderNames():
     data = list(csv.reader(open('Testdaten.sortiert.csv'), delimiter=';'))
@@ -11,5 +12,8 @@ def dataReaderNames():
     names_s = list(set(names))
     return names_s
 
-#names = dataReaderNames()
-
+def dataWriterDataset(dataset):
+    print("Export dataframe to csv (folder where script is run from) ..... \n")
+    df = pd.DataFrame(dataset)
+    df.to_csv('logfile_new.csv', index=False, header=False)
+    print("Done.")
