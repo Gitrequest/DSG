@@ -11,7 +11,6 @@ def dataSetGen(q, names):
     datasetraw = []
     dataset = []
     for n in range(q):
-        #Get Random Name
         name = randomname(names)
 
         # Creates Login Event with time delta
@@ -21,7 +20,7 @@ def dataSetGen(q, names):
         time = login[1].time()
         delta = datetime.timedelta(hours=random.randint(0, 23 - time.hour), minutes=random.randint(0, 59 - time.minute))
 
-        # Copys login event and adding logout event based on delta to prevent next time logout
+        # Copies login event and adding logout event based on delta to prevent logout event happening on next day
         logout = login.copy()
         logout[1] = datetime.datetime.combine(date, time) + delta
         logout[2] = 'logout'
