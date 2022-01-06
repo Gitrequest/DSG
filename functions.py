@@ -1,48 +1,38 @@
 import random
 import datetime
 
-def quantityCheck():
-    q = int(input("How much log events to create?\n"))
-    if q % 2 == 0:
-        return q
-    elif q % 2 != 0:
-        print("Should be dividable by 2. Duh. But i'll manage.")
-        q += 1
-        return q
-    else:
-        print("Something went really bad. Try again.  ¯\_(ツ)_/¯")
-        quantityCheck()
+def randomname(names):
+    return names[random.randint(0, len(names) - 1)]
 
+def keyfunc(sort):
+    return sort[1]
 
-def dateGen(sdate, edate, q):
-    print("Creating dates.....\n")
-    templist = []
-    for n in range(q):
-        randintLogin1 = random.randint(6, 22)
-        randintLogin2 = random.randint(10, 58)
-        randintLogout1 = random.randint(randintLogin1, 23)
-        randintLogout2 = random.randint(randintLogin2, 59)
-
-        randomDate = sdate + (edate - sdate) * random.random()
-        randomDate = datetime.datetime.strptime(str(randomDate), '%Y-%m-%d').strftime('%d.%m.%y')
-        randomDateLogin = str(randomDate) + " " + str(randintLogin1) + ":" + str(randintLogin2)
-        randomDateLogout = str(randomDate) + " " + str(randintLogout1) + ":" + str(randintLogout2)
-
-        templist.append(randomDateLogin)
-        templist.append(randomDateLogout)
-
-    finallist = list(sorted(set(templist)))
-    return finallist
-
-
-def namesEvents(q,names, dates):
-    print("Creating dataset.....\n")
+def dataSetGen(q, names):
+    datasetraw = []
     dataset = []
-    for i in range(1, q):
-        tempname = names[random.randint(0, len(names) - 1)]
-        dataset.append(tempname + ";" + dates[i] + ";login")
-        dataset.append(tempname + ";" + dates[i] + ";logout")
-    return dataset
+    for n in range(q):
+        #Get Random Name
+        name = randomname(names)
 
-def shuffle():
-    print("Shuffle events.....\n")
+        # Creates Login Event with time delta
+        # NAME, DATETIMEOBJEKT( JAHR, MONAT, TAG, STUNDE, MINUTE), EVENT
+        login = [name, datetime.datetime(2022, random.randint(1, 12), random.randint(1, 28), random.randint(6, 18), random.randint(1, 59)), 'login']
+        date = login[1].date()
+        time = login[1].time()
+        delta = datetime.timedelta(hours=random.randint(0, 23 - time.hour), minutes=random.randint(0, 59 - time.minute))
+
+        # Copys login event and adding logout event based on delta to prevent next time logout
+        logout = login.copy()
+        logout[1] = datetime.datetime.combine(date, time) + delta
+        logout[2] = 'logout'
+        datasetraw.append(login)
+        datasetraw.append(logout)
+
+    for n in range(len(datasetraw)):
+        dataset.append(datasetraw[n])
+
+    dataset.sort(key=keyfunc)
+    for r in dataset:
+        r[1] = r[1].strftime('%d. %m. %Y %H:%M')
+
+    return dataset

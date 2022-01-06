@@ -1,6 +1,8 @@
 import csv
 import pandas as pd
 
+
+
 def dataReaderNames():
     data = list(csv.reader(open('Testdaten.sortiert.csv'), delimiter=';'))
     names = []
@@ -15,5 +17,6 @@ def dataReaderNames():
 def dataWriterDataset(dataset):
     print("Export dataframe to csv (folder where script is run from) ..... \n")
     df = pd.DataFrame(dataset)
-    df.to_csv('logfile_new.csv', index=False, header=False)
-    print("Done.")
+    #df.replace(to_replace=',', value=';')
+    df.to_csv('logfile_new.csv', index=False, header=False, sep=';')
+    print("Done.\n")
